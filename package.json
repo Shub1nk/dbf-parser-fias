@@ -1,0 +1,19 @@
+{
+  "name": "dbf_parser",
+  "version": "1.0.0",
+  "description": "Парсер для DBF-файлов",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "dbf-parser": "0.0.1",
+    "stream-dbf": "^0.3.0"
+  },
+  "dependencies": {
+    "pg": "^7.11.0"
+  }
+}
