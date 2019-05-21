@@ -79,12 +79,17 @@ const parseHouse = (filename) => new Promise((resolve, reject) => {
           });
       })
       
-      console.log()
+      console.log("Поставили на паузу")
+      stream.pause()
+
       console.log("part before", part)
       await writeCSV();
       delete data[`part_${part}`]
       part++;
       console.log("part after", part)
+
+      stream.resume();
+      console.log("Продолжили работу")
     }
     
   });
