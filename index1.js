@@ -5,9 +5,10 @@ const parseHouse   = require('./index_csv_house');
 const filenameArr = fs.readdirSync("./files/fias_dbf", () => {
   console.log("finished")
 })
+
 let index          = 1;
-let counterAddrObj = 1;
-let counterHouse   = 1;
+let counterAddrObj = 0;
+let counterHouse   = 0;
 
 console.log();
 console.log(`========== Запуск парсера ==========`);
@@ -22,14 +23,14 @@ const parseFileName = (filename) => new Promise(async (resolve, reject) => {
     }
   
     if ((/^ADDROB/gi).test(filename)) {
-      // console.log(`${index}. ${filename} - Заходим в парсер объектов адресов`);
-      // counterAddrObj += await parseAddrObj(filename);
-      // console.log("counterAddrObj", counterAddrObj);
+      console.log(`${index}. ${filename} - Заходим в парсер объектов адресов`);
+      counterAddrObj += await parseAddrObj(filename);
+      console.log("counterAddrObj", counterAddrObj);
       index++;
       return resolve();
     } 
     
-    if ((/^HOUSE72/gi).test(filename)) {
+    if ((/^HOUSE/gi).test(filename)) {
       console.log(`${index}. ${filename} - Заходим в парсер домов`);
       counterHouse += await parseHouse(filename);
       console.log("counterHouse", counterHouse);
