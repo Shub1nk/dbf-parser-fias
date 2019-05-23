@@ -12,7 +12,9 @@ const parseAddrObj = (filename) => new Promise((resolve, reject) => {
   stream.on('data', async function(record) { 
     data.push(record);
     index = record["@sequenceNumber"];
-    console.log(`============= Читаем запись ${record["@sequenceNumber"]} из файла ${FILE_NAME} =============`);
+    if (index%10000 == 0) {
+      console.log(`============= Читаем запись ${record["@sequenceNumber"]} из файла ${FILE_NAME} =============`);
+    }
   });
 
   stream.on('error', reject);

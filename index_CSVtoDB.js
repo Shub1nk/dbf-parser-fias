@@ -2,22 +2,14 @@ const fs  = require('fs');
 const csv = require('csv-parser');
 const pgh = require('./db');
 
-// Получаем массив файлов по объектам адресов
-const filenameArrAddrObj = fs.readdirSync('./files/csv/addrobj', () => {
-  console.log('read addrobj finished');
-});
 
-// Получаем массив файлов по домам
-const filenameArrHouse = fs.readdirSync('./files/csv/house', () => {
-  console.log('read addrobj finished');
-});
 
 // Читаем и записываем информацию по объектам адресов. Функция для разбора 1 файла
 const readCSVAddrObj = (filename) => new Promise(async (resolve, reject) => {
   try {
     let result = [];
-    console.log(filename);
-    fs.createReadStream(`./files/csv/addrobj/${filename}`)
+    // console.log(filename);
+    const readStream = fs.createReadStream(`./files/csv/addrobj/${filename}`)
     .pipe(csv())
     .on("data", (data) => {
     result.push(data);
@@ -26,6 +18,8 @@ const readCSVAddrObj = (filename) => new Promise(async (resolve, reject) => {
     .on("end", async () => {
       console.log(`Read ${filename} finished. Rows:`, result.length);
       console.log();
+
+      readStream.pause();
 
       let pginstance;
       let index = 1;
@@ -69,6 +63,7 @@ const readCSVAddrObj = (filename) => new Promise(async (resolve, reject) => {
         pginstance && await pginstance.rollback();
         return reject(error);
       } finally {
+        readStream.resume()
         pginstance && await pginstance.close(true);
       }
       
@@ -86,7 +81,7 @@ const readCSVHouse = (filename) => new Promise(async (resolve, reject) => {
   try {
     let result = [];
     console.log(filename);
-    fs.createReadStream(`./files/csv/house/${filename}`)
+    const readStream = fs.createReadStream(`./files/csv/house/${filename}`)
     .pipe(csv())
     .on("data", (data) => {
     result.push(data);
@@ -95,6 +90,8 @@ const readCSVHouse = (filename) => new Promise(async (resolve, reject) => {
     .on("end", async () => {
       console.log(`Read ${filename} finished. Rows:`, result.length);
       console.log();
+
+      readStream.pause();
 
       let pginstance;
       let index = 1;
@@ -142,6 +139,7 @@ const readCSVHouse = (filename) => new Promise(async (resolve, reject) => {
         pginstance && await pginstance.rollback();
         return reject(error);
       } finally {
+        readStream.resume();
         pginstance && await pginstance.close(true);
       }
       
@@ -154,9 +152,14 @@ const readCSVHouse = (filename) => new Promise(async (resolve, reject) => {
   }
 });
 
-const readAllCSV = async () => {
+const ParserCSVtoDB = async () => {
   console.log("===== Start read =====");
   console.time("Common timer");
+
+  // Получаем массив файлов по объектам адресов
+  const filenameArrAddrObj = fs.readdirSync('./files/csv/addrobj', () => {
+    console.log('read addrobj finished');
+  });
 
   for (const filename of filenameArrAddrObj) {
     if ((/ADDROB72/gi).test(filename)) { // загрузка конкретного региона (файл может состоять из нескольких частей)
@@ -166,6 +169,11 @@ const readAllCSV = async () => {
     }
     console.log(filename);
   }
+
+  // Получаем массив файлов по домам
+  const filenameArrHouse = fs.readdirSync('./files/csv/house', () => {
+    console.log('read addrobj finished');
+  });
 
   for (const filename of filenameArrHouse) {
     if ((/HOUSE72/gi).test(filename)) { // загрузка конкретного региона (файл может состоять из нескольких частей)
@@ -180,7 +188,7 @@ const readAllCSV = async () => {
   console.log("===== Finish read =====");
 };
 
-readAllCSV();
+// readAllCSV();
 
 function sortField(array, i) {
   let str = '';
@@ -194,34 +202,7 @@ function sortField(array, i) {
   return str
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+module.exports = ParserCSVtoDB;
 
       //     await pginstance.query(`
       // insert into fias_addr_obj (actstatus, aoguid, aoid, aolevel, areacode, autocode, cadnum, centstatus, citycode, code, ctarcode, currstatus, divtype, enddate, extrcode, formalname, ifnsfl, ifnsul, livestatus, nextid, normdoc, offname, okato, oktmo, operstatus, parentguid, placecode, plaincode, plancode, postalcode, previd, regioncode, sextcode, shortname, startdate, streetcode, terrifnsfl, terrifnsul, updatedate)

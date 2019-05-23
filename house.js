@@ -55,11 +55,7 @@ const parseHouse = (filename) => new Promise((resolve, reject) => {
     
     if (record["@sequenceNumber"] == limit * part) {
 
-      console.log();
-      console.log("Попадаю ли я сюда вообще");
-      console.log("@sequenceNumber", record["@sequenceNumber"])
-      console.log("limit", limit)
-      console.log("part", part)
+      // console.log(`${filename}, part ${part}`)
 
       const writeCSV = () => new Promise ((resolve, reject) => {
         const csvWriter = createCsvWriter({  
@@ -70,26 +66,18 @@ const parseHouse = (filename) => new Promise((resolve, reject) => {
         csvWriter
           .writeRecords(data[`part_${part}`])
           .then(() =>  {
-            console.log(`${FILE_NAME}_part_${part}.csv created`);
-            // delete data[`part_${part}`]
-            // // console.log(`part_${part}`);
-            // // console.log(`А есть здесь массив с таким полем 'part_${part}'`, data[`part_${part}`])
-            // part++;
+            console.log(`======== ${FILE_NAME}_part_${part}.csv created ========`);
             resolve();
           });
       })
       
-      console.log("Поставили на паузу")
       stream.pause()
 
-      console.log("part before", part)
       await writeCSV();
       delete data[`part_${part}`]
       part++;
-      console.log("part after", part)
 
       stream.resume();
-      console.log("Продолжили работу")
     }
     
   });
@@ -98,8 +86,6 @@ const parseHouse = (filename) => new Promise((resolve, reject) => {
   
   stream.on('end', () => {
     console.log('finished');
-  
-    
 
     const test = Object.keys(data);
 
@@ -145,7 +131,7 @@ const parseHouse = (filename) => new Promise((resolve, reject) => {
         .then(() => console.log(`${FILE_NAME}_part_${part}.csv created`))
     // }
 
-    console.log("Закончили разбор файла");
+    // console.log("Закончили разбор файла");
     resolve(index);
   });
 });
