@@ -2,6 +2,11 @@ const fs  = require('fs');
 const csv = require('csv-parser');
 const pgh = require('./db');
 
+const REGION = process.argv[2];
+
+const ADDROB = new RegExp(`^ADDROB${REGION}`, 'gi');
+const HOUSE = new RegExp(`^HOUSE${REGION}`, "gi");
+
 // Получаем массив файлов по объектам адресов
 const filenameArrAddrObj = fs.readdirSync('./files/csv/addrobj', () => {
   console.log('read addrobj finished');
@@ -159,7 +164,7 @@ const readAllCSV = async () => {
   console.time("Common timer");
 
   for (const filename of filenameArrAddrObj) {
-    if ((/ADDROB72/gi).test(filename)) { // загрузка конкретного региона (файл может состоять из нескольких частей)
+    if ((ADDROB).test(filename)) { // загрузка конкретного региона (файл может состоять из нескольких частей)
       console.time(`${filename}`)
         await readCSVAddrObj(filename);
       console.timeEnd(`${filename}`)
@@ -168,7 +173,7 @@ const readAllCSV = async () => {
   }
 
   for (const filename of filenameArrHouse) {
-    if ((/HOUSE72/gi).test(filename)) { // загрузка конкретного региона (файл может состоять из нескольких частей)
+    if ((HOUSE).test(filename)) { // загрузка конкретного региона (файл может состоять из нескольких частей)
       console.time(`${filename}`)
         await readCSVHouse(filename);
       console.timeEnd(`${filename}`)

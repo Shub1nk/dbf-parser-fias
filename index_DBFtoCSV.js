@@ -6,6 +6,11 @@ const filenameArr = fs.readdirSync("./files/fias_dbf", () => {
   console.log("finished")
 })
 
+const REGION = process.argv[2];
+
+const ADDROB = new RegExp(`^ADDROB${REGION}`, 'gi');
+const HOUSE = new RegExp(`^HOUSE${REGION}`, "gi");
+
 let index          = 1;
 let counterAddrObj = 0;
 let counterHouse   = 0;
@@ -22,7 +27,7 @@ const parseFileName = (filename) => new Promise(async (resolve, reject) => {
       return resolve();
     }
   
-    if ((/^ADDROB/gi).test(filename)) {
+    if ((ADDROB).test(filename)) {
       console.log(`${index}. ${filename} - Заходим в парсер объектов адресов`);
       counterAddrObj += await parseAddrObj(filename);
       console.log("counterAddrObj", counterAddrObj);
@@ -30,7 +35,7 @@ const parseFileName = (filename) => new Promise(async (resolve, reject) => {
       return resolve();
     } 
     
-    if ((/^HOUSE/gi).test(filename)) {
+    if ((HOUSE).test(filename)) {
       console.log(`${index}. ${filename} - Заходим в парсер домов`);
       counterHouse += await parseHouse(filename);
       console.log("counterHouse", counterHouse);
