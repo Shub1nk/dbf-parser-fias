@@ -1,6 +1,6 @@
 const fs           = require('fs');
-const parseAddrObj = require('./index_csv_addr_obj');
-const parseHouse   = require('./index_csv_house');
+const parseAddrObj = require('./addr_obj');
+const parseHouse   = require('./house');
 
 const filenameArr = fs.readdirSync("./files/fias_dbf", () => {
   console.log("finished")

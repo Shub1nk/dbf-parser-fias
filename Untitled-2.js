@@ -130,3 +130,28 @@ AS $function$
 	END
 $function$
 ;
+
+
+aoguid,
+  buildnum,
+  cadnum,
+  counter,
+  divtype,
+  enddate,
+  eststatus,
+  houseguid,
+  houseid,
+  housenum,
+  ifnsfl,
+  ifnsul,
+  normdoc,
+  okato,
+  oktmo,
+  postalcode,
+  startdate,
+  statstatus,
+  strstatus,
+  strucnum,
+  terrifnsfl,
+  terrifnsul,
+  updatedate
