@@ -49,17 +49,10 @@ const parseHouse = (filename) => new Promise((resolve, reject) => {
     data[`part_${part}`].push(record);
 
     index = record["@sequenceNumber"];
-    // (record["@sequenceNumber"] < limit * part) ? part : part++;
     
-    // console.log(`============= Читаем запись ${record["@sequenceNumber"]} из файла ${FILE_NAME} =============`);      
+    (index%10000 === 0) && console.log(`============= Читаем запись ${record["@sequenceNumber"]} из файла ${FILE_NAME} =============`);
     
     if (record["@sequenceNumber"] == limit * part) {
-
-      console.log();
-      console.log("Попадаю ли я сюда вообще");
-      console.log("@sequenceNumber", record["@sequenceNumber"])
-      console.log("limit", limit)
-      console.log("part", part)
 
       const writeCSV = () => new Promise ((resolve, reject) => {
         const csvWriter = createCsvWriter({  
@@ -71,45 +64,25 @@ const parseHouse = (filename) => new Promise((resolve, reject) => {
           .writeRecords(data[`part_${part}`])
           .then(() =>  {
             console.log(`${FILE_NAME}_part_${part}.csv created`);
-            // delete data[`part_${part}`]
-            // // console.log(`part_${part}`);
-            // // console.log(`А есть здесь массив с таким полем 'part_${part}'`, data[`part_${part}`])
-            // part++;
             resolve();
           });
       })
       
-      console.log("Поставили на паузу")
       stream.pause()
 
-      console.log("part before", part)
       await writeCSV();
       delete data[`part_${part}`]
       part++;
-      console.log("part after", part)
 
       stream.resume();
-      console.log("Продолжили работу")
     }
-    
   });
   
   stream.on('error', reject);
   
   stream.on('end', () => {
-    console.log('finished');
-  
-    
 
-    const test = Object.keys(data);
-
-    console.log(test)
-
-    // for (let item of test) {
-      // console.log(data[item].length);
-      // console.log(item);
       const csvWriter = createCsvWriter({  
-        // path: `./files/csv/house/${FILE_NAME}_${item}.csv`,
         path: `./files/csv/house/${FILE_NAME}_part_${part}.csv`,
         
         header: [
@@ -140,11 +113,9 @@ const parseHouse = (filename) => new Promise((resolve, reject) => {
       });
 
       csvWriter
-        // .writeRecords(data[item])
         .writeRecords(data[`part_${part}`])
         .then(() => console.log(`${FILE_NAME}_part_${part}.csv created`))
-    // }
-
+        
     console.log("Закончили разбор файла");
     resolve(index);
   });

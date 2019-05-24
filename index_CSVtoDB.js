@@ -4,8 +4,16 @@ const pgh = require('./db');
 
 const REGION = process.argv[2];
 
-const ADDROB = new RegExp(`^ADDROB${REGION}`, 'gi');
-const HOUSE = new RegExp(`^HOUSE${REGION}`, "gi");
+const addrobj = 'ADDROB' + REGION;
+const house = 'HOUSE' + REGION;
+
+console.log(addrobj, house);
+
+const ADDROB = new RegExp(addrobj, 'gmi');
+const HOUSE = new RegExp(house, "gmi");
+
+console.log(ADDROB, HOUSE);
+// debugger;
 
 // Получаем массив файлов по объектам адресов
 const filenameArrAddrObj = fs.readdirSync('./files/csv/addrobj', () => {
@@ -164,21 +172,23 @@ const readAllCSV = async () => {
   console.time("Common timer");
 
   for (const filename of filenameArrAddrObj) {
-    if ((ADDROB).test(filename)) { // загрузка конкретного региона (файл может состоять из нескольких частей)
-      console.time(`${filename}`)
+    // if ((ADDROB).test(filename)) { // загрузка конкретного региона (файл может состоять из нескольких частей)
+    if (filename.indexOf(addrobj) !== -1) {
+      console.time(`${filename}`);
         await readCSVAddrObj(filename);
-      console.timeEnd(`${filename}`)
+      console.timeEnd(`${filename}`);
+      console.log(filename, "writed");
     }
-    console.log(filename);
   }
 
   for (const filename of filenameArrHouse) {
-    if ((HOUSE).test(filename)) { // загрузка конкретного региона (файл может состоять из нескольких частей)
-      console.time(`${filename}`)
+    if (filename.indexOf(house) !== -1) { // загрузка конкретного региона (файл может состоять из нескольких частей)
+      console.log(filename)
+      console.time(`${filename}`);
         await readCSVHouse(filename);
-      console.timeEnd(`${filename}`)
+      console.timeEnd(`${filename}`);
+      console.log(filename, "writed");
     }
-    console.log(filename);
   }
 
   console.timeEnd("Common timer");
